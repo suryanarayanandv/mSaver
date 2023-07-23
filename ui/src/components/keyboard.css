@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+body{
+    margin:0px;
+    padding:0px;
+    box-sizing: border-box;
+    font-family:'Roboto',sans-serif;
+    transition: .2s;
+}
+
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    margin:0 10px;
+}
+
+.keyboard_wrap{
+    max-width:1008px;
+    width: 100%;
+    background-color: #e7e7e7;
+    /* e7e7e7 */
+    overflow:hidden;
+    position: relative;
+}
+
+.row{
+    display: flex;
+}
+
+.keys{
+    width:60px;
+    height: 60px;
+    background-color:#fff ;
+    /* fff */
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    margin:4px;
+    transition:.2s;
+}
+
+#keys{
+    width:60px;
+    height: 60px;
+    background-color:#fff ;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    margin:4px;
+    transition:.2s;
+}
+
+.backspace_key{
+    width:120px
+}
+.tab_key{
+    width:90px;
+}
+
+.slash_key{
+    width:90px;
+}
+
+.caps_key{
+    width:128px;
+}
+.enter_key{
+    width:128px
+}
+
+.shift_key{
+    width:124px;
+}
+
+.space_key{
+    max-width:600px;
+    width:100%;
+}
+
+.text{
+    max-width:1008px;
+    width:100%;
+    height:90px;
+    margin-bottom:30px;
+    font-size:2rem;
+    background-color: #f7f7f6;
+    padding-left:10px;
+}
+
+.keys.active{
+    background-color: #333;
+    color:#fff;
+}
+
+.keys.remove{
+    animation:keys_animation 0.5s linear;
+}
+
+@keyframes keys_animation {
+    0%{
+        background-color: #333;
+        color:#fff;
+    }
+    100%{
+        background-color: #fff;
+        color:#000;
+    }
+}
+
+.configButton{
+    width:200px;
+    height:30px;
+    margin-top:25px;
+    background-color: cadetblue;
+    color: #f7f7f6;
+    font-size: 1rem;
+    padding:3px;
+}
