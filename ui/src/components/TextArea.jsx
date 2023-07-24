@@ -2,13 +2,13 @@ import React, { useState, useMemo } from "react";
 
 const TextArea = ({ auto }) => {
   const [value, setValue] = useState("");
-  const [matchlist, setMatchlist] = useState([]);
+  const [matching, setMatching] = useState([]);
   const currentUpdated = useMemo(() => ({ word: "", match: "" }), []);
-  const localValue = useMemo(() => value, [value]);
 
+  // Handle the key press
   function handleSearch(e) {
     setValue(e.target.value);
-    
+
     // if key == space call searchWords
     if (e && e.keyCode == 32) {
       let words = value.split(" ");
@@ -38,6 +38,7 @@ const TextArea = ({ auto }) => {
     }
   }
 
+  // Search for matching words api call
   function searchWords(word) {
     fetch("http://127.0.0.1:8000/saver/search", {
       method: "POST",
@@ -50,46 +51,44 @@ const TextArea = ({ auto }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        let matching = data.words;
-        console.log("line 30...", word, data);
+        let matchList = data.words;
         let changes = document.getElementById("changes");
         console.log(matching);
 
-        // auto -> change text
-        // else -> create button mappings
-        // TODO: fix button mappings (undefined behavior)
-        if (matching.length > 0) {
+        // auto correct -> change text
+        if (matchList.length > 0) {
           if (auto) {
             console.log("line 64 executing...", auto);
-            let newText = changeText(word, matching[0]);
+            let newText = changeText(word, matchList[0]);
             if (newText) {
               currentUpdated.word = word;
-              currentUpdated.match = matching[0];
+              currentUpdated.match = matchList[0];
               setValue(newText);
             }
-          } else {
-            /**
-             * understand that these buttons only revert back to the 
-             * previous states not to change the current one
-             * they don't have access to current one
-             * ? drop button mappings
-             */
-            matching.forEach((match) => {
-              setMatchlist((prev) => {
-                prev.push({"word": word, "match": match});
-                return prev;
-              });
-              console.log("matching: ", matchlist);
+          }
 
-              let changeText = changes.appendChild(button)
-              changeText.innerHTML = word + " => " + match;
-            });
+          // Not auto correct -> create key mappings
+          else {
+            setMatching((prev) => [...prev, { word: word, match: matchList[0] }]);
           }
         }
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  // Button mapping click handler
+  function handleManualCorrection(selectedSuggestion) {
+    let newText = changeText(selectedSuggestion.word, selectedSuggestion.match);
+    if (newText) {
+      setValue(newText);
+      // remove that suggestion from the list
+      let newMatching = matching.filter(
+        (match) => match.word !== selectedSuggestion.word
+      );
+      setMatching(newMatching);
+    }
   }
 
   function handleChange() {
@@ -100,8 +99,9 @@ const TextArea = ({ auto }) => {
     }
   }
 
+  // Update matching words
   function changeText(word, match) {
-    let text = localValue;
+    let text = value;
     let newText = text.replace(word, match);
     console.log("line 100 executing", text, newText);
     if (newText !== text && newText !== "") {
@@ -113,7 +113,8 @@ const TextArea = ({ auto }) => {
 
   return (
     <>
-      <textarea className="textarea"
+      <textarea
+        className="textarea"
         id="input"
         rows="10"
         cols="50"
@@ -122,9 +123,17 @@ const TextArea = ({ auto }) => {
         onChange={(e) => setValue(e.target.value)}
       ></textarea>
       <br />
-      <span className="changes" id="changes"></span>
+      <span className="changes" id="changes">
+        {matching.map((match, index) => (
+          <button key={index} onClick={() => handleManualCorrection(match)}>
+            {match.word + " -> " + match.match}
+          </button>
+        ))}
+      </span>
       <br />
-      <span className="result" id="result">{value}</span>
+      <span className="result" id="result">
+        {value}
+      </span>
     </>
   );
 };
