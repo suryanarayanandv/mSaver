@@ -69,7 +69,7 @@ def generateMappings(letters: list):
 # Generating mappings.json
 def generateMappingFile(letters: list):
     try:
-        with open("mappings.json", "w") as f:
+        with open("./word-config/mappings.json", "w") as f:
             f.write(json.dumps(generateMappings(letters)))
         return True
     except:
@@ -79,7 +79,7 @@ def generateMappingFile(letters: list):
 def findMatches(word: str):
     word_mapping = {}
     try:
-        with open("mappings.json", "r") as f:
+        with open("./word-config/mappings.json", "r") as f:
             word_mapping = json.load(f)
     
         if word in word_mapping:
