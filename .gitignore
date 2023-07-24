@@ -161,3 +161,7 @@ cython_debug/
 
 # node
 node_modules/
+
+# app specific
+*/mappings.json
+*/word-*.txt
