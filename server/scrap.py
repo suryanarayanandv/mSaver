@@ -1,11 +1,11 @@
 import json
-import shutil
 from bs4 import BeautifulSoup
 import requests
 import regex as re
 
-
-def fetchWords(letter: str) -> dict:
+# Single letter words
+# @param initialLength -> Minimum length of the words to be fetched
+def fetchWords(letter: str, initialLength: int) -> list:
     url_start = r"https://www.thefreedictionary.com/words-that-start-with-" + letter.lower()
     url_mid = r"https://www.thefreedictionary.com/words-containing-" + letter.lower()
     
@@ -14,52 +14,82 @@ def fetchWords(letter: str) -> dict:
 
     divs = []
     
+    # Fetching words with length >= 2*initialLength
+        
     # Getting WOrds starting with the specified letter
     soup = BeautifulSoup(response_start.text, 'html.parser')
-    for i in range(3, 16):
+    for i in range(2*initialLength, 16):
         divs.append(soup.find("div", {"id": "w" + str(i)}))
         
     # Getting Words containing the specified letter
     soup = BeautifulSoup(response_mid.text, 'html.parser')
-    for i in range(3, 16):
+    for i in range(2*initialLength, 16):
         divs.append(soup.find("div", {"id": "w" + str(i)}))
 
+    # Extracting words from divs
+    words = []
+    for div in divs:
+        for li in div.find_all("li"):
+            words.append(li.text)
 
-    # write it to a file
-    filename = "words-" + letter + ".txt"
-    with open(filename, "w") as f:
-        for div in divs:
-            for li in div.find_all('li'):
-                f.write(li.text + "\n")
-                
-    return generateMap(letter, filename)
+    return words
 
-def generateMap(letter: str, path: str):
+# Multiple letters word mappings
+def fetchWordsMul(letters: list, initialLength: int) -> dict:
     Words = []
-    word_mapping = {}
-    with open(path, "r") as f:
-        Words = f.readlines()
+    
+    for letter in letters:
+        Words += fetchWords(letter, initialLength)
+        
+    return Words
 
+# Words excluding missing keys
+def fetchWodswithMissedKeys(letters: list, Words: list):
+    missedKeyWords = []
+    
     for word in Words:
-        # remove the new line character
-        word = word.strip()
-        letters = list(word)
-        if letters[0] == letter:
-            word_mapping[''.join(letters[1::])] = word[0:len(word)]
-            
-        elif letter in word:
-            word_mapping[word.replace(letter, "")] = word[0:len(word)]
-            
+        for letter in letters:
+            word = word.replace(letter, "")
+        missedKeyWords.append(word)
+        
+    return missedKeyWords
+    
+# Generating mappings { word with missed keys -> word }
+def generateMappings(letters: list):
+    initialLength = len(letters)
+    Words = fetchWordsMul(letters, initialLength)
+    missedKeyWords = fetchWodswithMissedKeys(letters, Words)
 
-    return word_mapping
+    mappings = {}
+    for i in range(len(Words)):
+        mappings[missedKeyWords[i]] = Words[i]
+        
+    return mappings
 
+# Generating mappings.json
+def generateMappingFile(letters: list):
+    try:
+        with open("mappings.json", "w") as f:
+            f.write(json.dumps(generateMappings(letters)))
+        return True
+    except:
+        return False
 
-def findMatches(word: str, word_mapping: dict):
-    if word in word_mapping:
-        matches = {
-            "words": [word_mapping[word]],
-        }
-    else:
-        return json.dumps({"words": []})
+# Finding matches from mappings.json
+def findMatches(word: str):
+    word_mapping = {}
+    try:
+        with open("mappings.json", "r") as f:
+            word_mapping = json.load(f)
+    
+        if word in word_mapping:
+            matches = {
+                "words": [word_mapping[word]],
+            }
+        else:
+            return json.dumps({"words": []})
 
-    return json.dumps(matches)
+        return json.dumps(matches)
+    
+    except:
+        return False
