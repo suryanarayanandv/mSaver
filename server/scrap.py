@@ -18,12 +18,12 @@ def fetchWords(letter: str, initialLength: int) -> list:
         
     # Getting WOrds starting with the specified letter
     soup = BeautifulSoup(response_start.text, 'html.parser')
-    for i in range(2*initialLength, 16):
+    for i in range(max(4, 2*initialLength), 16):
         divs.append(soup.find("div", {"id": "w" + str(i)}))
         
     # Getting Words containing the specified letter
     soup = BeautifulSoup(response_mid.text, 'html.parser')
-    for i in range(2*initialLength, 16):
+    for i in range(max(4, 2*initialLength), 16):
         divs.append(soup.find("div", {"id": "w" + str(i)}))
 
     # Extracting words from divs
