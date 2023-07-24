@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo } from "react";
 
 const TextArea = ({ auto }) => {
   const [value, setValue] = useState("");
-  const [matching, setMatching] = useState([]);
-  
+  const [matchlist, setMatchlist] = useState([]);
   const currentUpdated = useMemo(() => ({ word: "", match: "" }), []);
+  const localValue = useMemo(() => value, [value]);
 
   function handleSearch(e) {
-    // if key == space call searchWords
     setValue(e.target.value);
+    
+    // if key == space call searchWords
     if (e && e.keyCode == 32) {
       let words = value.split(" ");
       words.pop();
@@ -16,6 +17,7 @@ const TextArea = ({ auto }) => {
       console.log("line 16 executing...", lastWord);
       searchWords(lastWord);
     }
+
     // if key == backspace
     if (e && e.keyCode == 8) {
       if (currentUpdated.word == "" || currentUpdated.match == "") {
@@ -28,7 +30,7 @@ const TextArea = ({ auto }) => {
           if (newText) {
             setValue(newText + " ");
           }
-          // reset currentUpdated
+          // Reset Current updated values
           currentUpdated.word = "";
           currentUpdated.match = "";
         }
@@ -53,30 +55,34 @@ const TextArea = ({ auto }) => {
         let changes = document.getElementById("changes");
         console.log(matching);
 
-        // if matching is not empty
         // auto -> change text
         // else -> create button mappings
         // TODO: fix button mappings (undefined behavior)
         if (matching.length > 0) {
           if (auto) {
-            console.log("line 39 executing...", auto);
+            console.log("line 64 executing...", auto);
             let newText = changeText(word, matching[0]);
             if (newText) {
               currentUpdated.word = word;
               currentUpdated.match = matching[0];
-              console.log("line 44 executing...", currentUpdated);
               setValue(newText);
             }
           } else {
+            /**
+             * understand that these buttons only revert back to the 
+             * previous states not to change the current one
+             * they don't have access to current one
+             * ? drop button mappings
+             */
             matching.forEach((match) => {
-              let button = changes.appendChild(
-                document.createElement("button")
-              );
-              button.innerHTML = word + " => " + match;
-              button.addEventListener("click", () => {
-                handleChange(word, match);
-                button.remove();
+              setMatchlist((prev) => {
+                prev.push({"word": word, "match": match});
+                return prev;
               });
+              console.log("matching: ", matchlist);
+
+              let changeText = changes.appendChild(button)
+              changeText.innerHTML = word + " => " + match;
             });
           }
         }
@@ -86,8 +92,8 @@ const TextArea = ({ auto }) => {
       });
   }
 
-  function handleChange(word, match) {
-    let newText = changeText(word, match);
+  function handleChange() {
+    let newText = changeText(matching[0].word, matching[0].match);
     if (newText) {
       setValue(newText);
       console.log(value, newText);
@@ -95,10 +101,9 @@ const TextArea = ({ auto }) => {
   }
 
   function changeText(word, match) {
-    console.log("line 51 executing...", value);
-    let text = value;
+    let text = localValue;
     let newText = text.replace(word, match);
-    console.log("line 54 executing..." + value + " " + newText);
+    console.log("line 100 executing", text, newText);
     if (newText !== text && newText !== "") {
       return newText;
     } else {
@@ -108,7 +113,7 @@ const TextArea = ({ auto }) => {
 
   return (
     <>
-      <textarea
+      <textarea className="textarea"
         id="input"
         rows="10"
         cols="50"
@@ -117,9 +122,9 @@ const TextArea = ({ auto }) => {
         onChange={(e) => setValue(e.target.value)}
       ></textarea>
       <br />
-      <span id="changes"></span>
+      <span className="changes" id="changes"></span>
       <br />
-      <span id="result">{value}</span>
+      <span className="result" id="result">{value}</span>
     </>
   );
 };
