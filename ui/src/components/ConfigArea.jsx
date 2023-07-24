@@ -18,31 +18,18 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        letter: enteredValue[0].toLowerCase(),
+        letters: enteredValue,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        alert("Configuration Scuccessful!");
       })
       .catch((err) => {
-        console.log(err);
+        alert("There was an error configuring the keyboard!");
       });
   }
 
-  function handleChange(event) {
-    setValue(event.target.value);
-  }
-
-  // Single letter config
-  // TODO: Add multiple letter config
-  // TODO: Add Keyboard layout
-
-  const upDateProcess = (item) => {
-    const toBeUpdated = !item.active;
-    const updatedData = updateLetter(item.id, toBeUpdated);
-    setWholeData(updatedData);
-  };
 
   const handleSubmit = (e) => {
     const recent_key = e.target.innerHTML;
