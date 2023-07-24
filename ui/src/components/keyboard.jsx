@@ -64,7 +64,6 @@ const Keyboard = ({firstRow,secondRow,thirdRow,fourthRow,enteredValue,handleSubm
 
             </div>
         </div>
-        <input className='configButton' value='CONFIG' type="button"/>
     </div>
   )
 }
