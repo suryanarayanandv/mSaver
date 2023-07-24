@@ -14,7 +14,6 @@ const TextArea = ({ auto }) => {
       let words = value.split(" ");
       words.pop();
       let lastWord = words.pop();
-      console.log("line 16 executing...", lastWord);
       searchWords(lastWord);
     }
 
@@ -53,12 +52,10 @@ const TextArea = ({ auto }) => {
       .then((data) => {
         let matchList = data.words;
         let changes = document.getElementById("changes");
-        console.log(matching);
 
         // auto correct -> change text
         if (matchList.length > 0) {
           if (auto) {
-            console.log("line 64 executing...", auto);
             let newText = changeText(word, matchList[0]);
             if (newText) {
               currentUpdated.word = word;
@@ -95,7 +92,6 @@ const TextArea = ({ auto }) => {
     let newText = changeText(matching[0].word, matching[0].match);
     if (newText) {
       setValue(newText);
-      console.log(value, newText);
     }
   }
 
@@ -103,7 +99,6 @@ const TextArea = ({ auto }) => {
   function changeText(word, match) {
     let text = value;
     let newText = text.replace(word, match);
-    console.log("line 100 executing", text, newText);
     if (newText !== text && newText !== "") {
       return newText;
     } else {
