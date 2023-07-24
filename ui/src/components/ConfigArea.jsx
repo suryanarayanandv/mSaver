@@ -30,39 +30,46 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
       });
   }
 
+  const upDateProcess=(item)=>{
+    const toBeUpdated = !item.active;
+    const updatedData=updateLetter(item.id,toBeUpdated);
+    console.log("updated",updatedData);
+    setWholeData(updatedData);
+  }
 
   const handleSubmit = (e) => {
-    const recent_key = e.target.innerHTML;
+    const recent_key = (e.target.innerHTML).toLowerCase();
     if (
-      recent_key === "Ctrl" ||
-      recent_key === "Alt" ||
-      recent_key === "Shift_l" ||
-      recent_key === "Shift_r" ||
-      recent_key === "Win" ||
-      recent_key === "Fn" ||
-      recent_key === "CapsLock" ||
-      recent_key === "Tab" ||
-      recent_key === "Enter"
+      recent_key === "ctrl" ||
+      recent_key === "alt" ||
+      recent_key === "shift_l" ||
+      recent_key === "shift_r" ||
+      recent_key === "win" ||
+      recent_key === "fn" ||
+      recent_key === "capslock" ||
+      recent_key === "tab" ||
+      recent_key === "enter"
     ) {
       return;
     }
 
     wholeData.map((item, index) => {
-      if (item.text === recent_key) {
-        if (recent_key === "Backspace") {
+      if ((item.text).toLowerCase() === recent_key) {
+        if (recent_key === "backspace") {
           setClickedButtonRef(e.target.innerHTML);
           const valueDeleted = enteredValue.pop();
+                  
           wholeData.map((item) =>
-            item.text === valueDeleted ? upDateProcess(item) : item
+            (item.text).toLowerCase() === valueDeleted ? upDateProcess(item) : item
           );
           setEnteredValue(enteredValue);
           return null;
         }
         if (recent_key === " ") {
-          setClickedButtonRef(e.target.innerHTML);
+          setClickedButtonRef(recent_key);
           upDateProcess(item);
-          setEnteredValue((prevKey) => [...prevKey, e.target.innerHTML]);
-          setClickedButtonRef(e.target.innerHTML);
+          setEnteredValue((prevKey) => [...prevKey, recent_key]);
+          setClickedButtonRef(recent_key);
           return null;
         }
 
@@ -75,7 +82,7 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
         }
 
         upDateProcess(item);
-        setEnteredValue((prevKey) => [...prevKey, e.target.innerHTML]);
+        setEnteredValue((prevKey) => [...prevKey, recent_key]);
         setClickedButtonRef(e.target.innerHTML);
       }
       return null;

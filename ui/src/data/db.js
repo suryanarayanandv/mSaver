@@ -59,10 +59,11 @@ let letters=[
         {id:58,text:" ",active:false},
         {id:59,text:"Alt",active:false},
         {id:60,text:"Fn",active:false},
-        {id:61,text:"Ctril",active:false},
+        {id:61,text:"Ctrl",active:false},
 ]
 
 const getData =()=>letters;
+
 const updateLetter=(id,toBeUpdated)=>{
     letters=letters.map((item)=>(
         item.id === id ? {...item,active:toBeUpdated}:item
