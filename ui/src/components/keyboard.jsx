@@ -1,5 +1,5 @@
 import React from 'react'
-import "./keyboard.css"
+import "../styles/keyboard.css"
 
 const Keyboard = ({firstRow,secondRow,thirdRow,fourthRow,enteredValue,handleSubmit,clickedButtonRef}) => {
   return (
