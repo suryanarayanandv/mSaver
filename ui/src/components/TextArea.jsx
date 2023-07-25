@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import "../styles/textarea.css";
 
 const TextArea = ({ auto }) => {
   const [value, setValue] = useState("");
@@ -51,7 +52,6 @@ const TextArea = ({ auto }) => {
       .then((res) => res.json())
       .then((data) => {
         let matchList = data.words;
-        let changes = document.getElementById("changes");
 
         // auto correct -> change text
         if (matchList.length > 0) {
@@ -110,7 +110,6 @@ const TextArea = ({ auto }) => {
     <>
       <textarea
         className="textarea"
-        id="input"
         rows="10"
         cols="50"
         value={value}
@@ -118,17 +117,17 @@ const TextArea = ({ auto }) => {
         onChange={(e) => setValue(e.target.value)}
       ></textarea>
       <br />
-      <span className="changes" id="changes">
+      <div className="changes">
         {matching.map((match, index) => (
           <button key={index} onClick={() => handleManualCorrection(match)}>
             {match.word + " -> " + match.match}
           </button>
         ))}
-      </span>
-      <br />
-      <span className="result" id="result">
-        {value}
-      </span>
+      </div>
+
+      <div className="result-container">
+        <span className="result-label">Result: {value}</span>
+      </div>
     </>
   );
 };
