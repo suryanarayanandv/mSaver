@@ -3,7 +3,7 @@ import Keyboard from "./Keyboard";
 import { getData, updateLetter } from "../data/db";
 import "../styles/configarea.css";
 
-function ConfigArea({ isAutoComplete, setAutoComplete }) {
+function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
   const [auto, setAuto] = useState(isAutoComplete);
 
   //KEYBOARD HANDLERS
@@ -17,7 +17,7 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
       alert("Please enter the letters");
       return;
     }
-    
+
     fetch("http://127.0.0.1:8000/saver/config", {
       method: "POST",
       headers: {
@@ -32,6 +32,7 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
       if (!res.ok) {
         alert("Error: " + res.status + " " + res.statusText);
       }
+      close();
       alert("Configured Successfully");
     })
   }
