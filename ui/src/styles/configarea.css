@@ -1,9 +1,14 @@
-.configButton {
+.auto-complete-pane .configButton {
     width: 200px;
     height: 30px;
-    margin-top: 25px;
     background-color: cadetblue;
     color: #f7f7f6;
     font-size: 1rem;
     padding: 3px;
+}
+
+.auto-complete-pane {
+    position: relative;
+    width: 30%;
+    height: 30%;
 }
