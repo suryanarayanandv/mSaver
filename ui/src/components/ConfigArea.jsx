@@ -12,6 +12,12 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
   const [clickedButtonRef, setClickedButtonRef] = useState();
 
   function handleConfig() {
+    // if entered value is empty
+    if (enteredValue.length === 0) {
+      alert("Please enter the letters");
+      return;
+    }
+    
     fetch("http://127.0.0.1:8000/saver/config", {
       method: "POST",
       headers: {
@@ -21,13 +27,13 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
         letters: enteredValue,
       }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Configuration Scuccessful!");
-      })
-      .catch((err) => {
-        alert("There was an error configuring the keyboard!");
-      });
+    // check if the response is ok
+    .then((res) => {
+      if (!res.ok) {
+        alert("Error: " + res.status + " " + res.statusText);
+      }
+      alert("Configured Successfully");
+    })
   }
 
   const upDateProcess=(item)=>{
@@ -101,20 +107,24 @@ function ConfigArea({ isAutoComplete, setAutoComplete }) {
         enteredValue={enteredValue}
         clickedButtonRef={clickedButtonRef}
       />
-      
-      <input
-        type="checkbox"
-        id="auto"
-        name="auto"
-        checked={auto}
-        onChange={() => {
-          setAuto(!auto);
-          setAutoComplete(!auto);
-        }}
-      />
-      AutoCorrect
-      <br />
-      <button className="configButton" onClick={handleConfig}>Config</button>
+
+      <div className="auto-complete-pane">
+        <input
+          type="checkbox"
+          id="auto"
+          name="auto"
+          checked={auto}
+          onChange={() => {
+            setAuto(!auto);
+            setAutoComplete(!auto);
+          }}
+        />
+        AutoCorrect
+        <br />
+        <button className="configButton" onClick={handleConfig}>
+          Config
+        </button>
+      </div>
     </>
   );
 }
