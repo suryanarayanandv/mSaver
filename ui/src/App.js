@@ -11,8 +11,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="header">
-        <div className="logo"></div>
+      <div className="navbar">
         <h1 className="title">MSaver</h1>
       </div>
 
@@ -20,7 +19,15 @@ function App() {
         <button className="config-btn" onClick={() => setOpen(!open)}>
           Setup Missing Words!
         </button>
-        <Overlay open={open} close={() => setOpen(!open)} auto={auto} setauto={setAuto} />
+      </div>
+
+      <div clasName="config-area">
+        <Overlay
+          open={open}
+          close={() => setOpen(!open)}
+          auto={auto}
+          setauto={setAuto}
+        />
       </div>
 
       <div className="container">
