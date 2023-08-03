@@ -1,0 +1,38 @@
+.textarea {
+    position: relative;
+    justify-content: center;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 1.2rem;
+    font-family: 'Roboto', sans-serif;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    background-color: #333;
+    color: #4d4d4d;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.changes button{
+    width: 200px;
+    height: 30px;
+    background-color: cadetblue;
+    color: #f7f7f6;
+    font-size: 1rem;
+    padding: 3px;
+}
+
+.result-container {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    color: rgba(rgb(91, 79, 207), green, blue, alpha);
+    background-color: #;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.result-label {
+    font-weight: bold;
+}

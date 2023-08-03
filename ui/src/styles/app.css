@@ -1,0 +1,21 @@
+body {
+    background-color: #fafafa;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: unset;
+}
+
+.navbar {
+    background-color: #5f95bbb2;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
