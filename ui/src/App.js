@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import React, { useState } from "react";
 import Overlay from "./components/Overlay.jsx";
 import TextArea from "./components/TextArea.jsx";
@@ -12,7 +11,8 @@ function App() {
   return (
     <div className="App">
       <div className="navbar">
-        <h1 className="title">MSaver</h1>
+          <img src='/msaver.ico' alt="logo" className="logo" />
+          <h1 className="title">MSaver</h1>
       </div>
 
       <div className="config">
