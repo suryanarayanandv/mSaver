@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Keyboard from "./Keyboard";
 import { getData, updateLetter } from "../data/db";
 import "../styles/configarea.css";
@@ -8,8 +8,18 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
 
   //KEYBOARD HANDLERS
   const [wholeData, setWholeData] = useState(getData);
-  const [enteredValue, setEnteredValue] = useState([]);
   const [clickedButtonRef, setClickedButtonRef] = useState();
+  const [enteredValue, setEnteredValue] = useState([]); 
+  var updatedEnteredValue = [...enteredValue];
+  
+  useEffect(()=>{
+    const savedValue = localStorage.getItem('EnteredValue');
+    if (savedValue) {
+        setEnteredValue(JSON.parse(savedValue));
+    }
+    
+},[]);
+
 
   function handleConfig() {
     // if entered value is empty
@@ -40,11 +50,12 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
   const upDateProcess=(item)=>{
     const toBeUpdated = !item.active;
     const updatedData=updateLetter(item.id,toBeUpdated);
-    console.log("updated",updatedData);
     setWholeData(updatedData);
+    console.log(updatedData);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    var newDataToStore;
     const recent_key = (e.target.innerHTML).toLowerCase();
     if (
       recent_key === "ctrl" ||
@@ -70,14 +81,14 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
             (item.text).toLowerCase() === valueDeleted ? upDateProcess(item) : item
           );
           setEnteredValue(enteredValue);
-          return null;
+          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
         }
         if (recent_key === " ") {
           setClickedButtonRef(recent_key);
           upDateProcess(item);
           setEnteredValue((prevKey) => [...prevKey, recent_key]);
           setClickedButtonRef(recent_key);
-          return null;
+          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
         }
 
         if (enteredValue.includes(recent_key)) {
@@ -85,14 +96,19 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
           enteredValue.splice(index, 1);
           setEnteredValue(enteredValue);
           upDateProcess(item);
-          return null;
+          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
         }
 
         upDateProcess(item);
         setEnteredValue((prevKey) => [...prevKey, recent_key]);
+        console.log(recent_key);
         setClickedButtonRef(e.target.innerHTML);
+        console.log("enter",enteredValue);
+        const val=localStorage.getItem("EnteredValue");
+        console.log(val);
+        return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
       }
-      return null;
+      
     });
   };
 
@@ -107,6 +123,9 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
         handleSubmit={handleSubmit}
         enteredValue={enteredValue}
         clickedButtonRef={clickedButtonRef}
+        setEnteredValue={setEnteredValue}
+        wholedata={wholeData}
+        
       />
 
       <div className="auto-complete-pane">

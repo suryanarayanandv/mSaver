@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import "../styles/keyboard.css"
 
-const Keyboard = ({firstRow,secondRow,thirdRow,fourthRow,enteredValue,handleSubmit,clickedButtonRef}) => {
+const Keyboard = ({firstRow,secondRow,thirdRow,fourthRow,enteredValue,handleSubmit,clickedButtonRef,wholedata,setEnteredValue}) => {
+    const inputRef=useRef(null);
+    useEffect(()=>{
+        const savedValue = localStorage.getItem('EnteredValue');
+        if (savedValue) {
+            setEnteredValue(savedValue);
+        }
+       
+    },[]);
+
   return (
     <div className='container'>
         <input className='text' type="text" value={enteredValue.join("")}></input>
+        {/* value={enteredValue.join("")} ref={inputRef}*/}
         <div className='keyboard_wrap'>
             <div className='keyboard_keys'>
                 <div className='row'>
