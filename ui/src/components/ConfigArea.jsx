@@ -8,18 +8,30 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
 
   //KEYBOARD HANDLERS
   const [wholeData, setWholeData] = useState(getData);
-  const [clickedButtonRef, setClickedButtonRef] = useState();
-  const [enteredValue, setEnteredValue] = useState([]); 
+  const [clickedButtonRef, setClickedButtonRef] = useState("");
+  const [enteredValue, setEnteredValue] = useState([]);
   var updatedEnteredValue = [...enteredValue];
-  
-  useEffect(()=>{
-    const savedValue = localStorage.getItem('EnteredValue');
-    if (savedValue) {
-        setEnteredValue(JSON.parse(savedValue));
-    }
-    
-},[]);
 
+  useEffect(() => {
+    const savedValue = JSON.parse(localStorage.getItem("EnteredValue"));
+    if (savedValue) {
+      setEnteredValue(savedValue);
+
+      // setting preconfigured buttons to active
+      savedValue.forEach((item) => {
+        wholeData.map((item1) =>
+          item1.text.toLowerCase() === item ? setActiveButton(item1) : item1
+        );
+      });
+    }
+  }, []);
+
+  // to set active buttons after reloading
+  function setActiveButton(item) {
+    const toBeUpdated = "active";
+    const updatedData = updateLetter(item.id, toBeUpdated);
+    setWholeData(updatedData);
+  }
 
   function handleConfig() {
     // if entered value is empty
@@ -37,26 +49,25 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
         letters: enteredValue,
       }),
     })
-    // check if the response is ok
-    .then((res) => {
-      if (!res.ok) {
-        alert("Error: " + res.status + " " + res.statusText);
-      }
-      close();
-      alert("Configured Successfully");
-    })
+      // check if the response is ok
+      .then((res) => {
+        if (!res.ok) {
+          alert("Error: " + res.status + " " + res.statusText);
+        }
+        close();
+        alert("Configured Successfully");
+      });
   }
 
-  const upDateProcess=(item)=>{
+  const upDateProcess = (item) => {
     const toBeUpdated = !item.active;
-    const updatedData=updateLetter(item.id,toBeUpdated);
+    const updatedData = updateLetter(item.id, toBeUpdated);
     setWholeData(updatedData);
-    console.log(updatedData);
-  }
+  };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     var newDataToStore;
-    const recent_key = (e.target.innerHTML).toLowerCase();
+    const recent_key = e.target.innerHTML.toLowerCase();
     if (
       recent_key === "ctrl" ||
       recent_key === "alt" ||
@@ -71,45 +82,50 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
       return;
     }
 
-    wholeData.map((item, index) => {
-      if ((item.text).toLowerCase() === recent_key) {
-        if (recent_key === "backspace") {
-          setClickedButtonRef(e.target.innerHTML);
-          const valueDeleted = enteredValue.pop();
-                  
-          wholeData.map((item) =>
-            (item.text).toLowerCase() === valueDeleted ? upDateProcess(item) : item
-          );
-          setEnteredValue(enteredValue);
-          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
-        }
-        if (recent_key === " ") {
-          setClickedButtonRef(recent_key);
-          upDateProcess(item);
-          setEnteredValue((prevKey) => [...prevKey, recent_key]);
-          setClickedButtonRef(recent_key);
-          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
-        }
-
-        if (enteredValue.includes(recent_key)) {
-          const index = enteredValue.indexOf(recent_key);
-          enteredValue.splice(index, 1);
-          setEnteredValue(enteredValue);
-          upDateProcess(item);
-          return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
-        }
-
-        upDateProcess(item);
-        setEnteredValue((prevKey) => [...prevKey, recent_key]);
-        console.log(recent_key);
-        setClickedButtonRef(e.target.innerHTML);
-        console.log("enter",enteredValue);
-        const val=localStorage.getItem("EnteredValue");
-        console.log(val);
-        return localStorage.setItem("EnteredValue",JSON.stringify(enteredValue));
+    if (recent_key === "backspace") {
+      if (enteredValue.length === 0) {
+        return;
       }
-      
-    });
+
+      // remove the last element from the entered value
+      const valueDeleted = enteredValue.pop();
+      wholeData.map((item) =>
+        item.text.toLowerCase() === valueDeleted ? upDateProcess(item) : item
+      );
+      setEnteredValue(enteredValue);
+
+      // update the  storage
+      localStorage.setItem("EnteredValue", JSON.stringify(enteredValue));
+      return;
+    }
+
+    if (recent_key === " ") {
+      return;
+    }
+
+    // if the entered value is already present in the entered value
+    if (enteredValue.includes(recent_key)) {
+      wholeData.map((item) =>
+        item.text.toLowerCase() === recent_key ? upDateProcess(item) : item
+      );
+      const index = enteredValue.indexOf(recent_key);
+      enteredValue.splice(index, 1);
+      setEnteredValue(enteredValue);
+      upDateProcess(recent_key);
+      localStorage.setItem("EnteredValue", JSON.stringify(enteredValue));
+      return;
+    }
+
+    // if the entered value is not present in the entered value
+    // else
+    console.log(recent_key);
+    wholeData.map((item) =>
+      item.text.toLowerCase() === recent_key ? upDateProcess(item) : item
+    );
+    upDateProcess(recent_key);
+    setEnteredValue((prevKey) => [...prevKey, recent_key]);
+    setClickedButtonRef(e.target.innerHTML);
+    localStorage.setItem("EnteredValue", JSON.stringify(enteredValue));
   };
 
   return (
@@ -125,7 +141,6 @@ function ConfigArea({ isAutoComplete, setAutoComplete, close }) {
         clickedButtonRef={clickedButtonRef}
         setEnteredValue={setEnteredValue}
         wholedata={wholeData}
-        
       />
 
       <div className="auto-complete-pane">
