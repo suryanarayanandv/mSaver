@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from "react";
 import "../styles/textarea.css";
 
+// Result component
+import Result from "./Result";
+
 const TextArea = ({ auto }) => {
   const [value, setValue] = useState("");
   const [matching, setMatching] = useState([]);
@@ -111,7 +114,7 @@ const TextArea = ({ auto }) => {
       <textarea
         className="textarea"
         rows="10"
-        cols="50"
+        cols="80"
         value={value}
         onKeyUp={(e) => handleSearch(e)}
         onChange={(e) => setValue(e.target.value)}
@@ -124,10 +127,7 @@ const TextArea = ({ auto }) => {
           </button>
         ))}
       </div>
-
-      <div className="result-container">
-        <span className="result-label">Result: {value}</span>
-      </div>
+      <Result value={value} />
     </>
   );
 };
